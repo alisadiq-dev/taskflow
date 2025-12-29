@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: taskflow-postgres
+    environment:
+      POSTGRES_DB: taskflow
+      POSTGRES_USER: taskflow
+      POSTGRES_PASSWORD: taskflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: taskflow-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Application
+  api:
+    build: .
+    container_name: taskflow-api
+    environment:
+      TASKFLOW_DATABASE_URL: postgresql+asyncpg://taskflow:taskflow@postgres:5432/taskflow
+      TASKFLOW_REDIS_URL: redis://redis:6379/0
+      TASKFLOW_CELERY_BROKER_URL: redis://redis:6379/1
+      TASKFLOW_CELERY_RESULT_BACKEND: redis://redis:6379/2
+      TASKFLOW_SCHEDULER_JOB_STORE: redis://redis:6379/3
+      TASKFLOW_DEBUG: "true"
+      TASKFLOW_LOG_LEVEL: INFO
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn taskflow.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Celery Worker (Default Queue)
+  worker:
+    build: .
+    container_name: taskflow-worker
+    environment:
+      TASKFLOW_DATABASE_URL: postgresql+asyncpg://taskflow:taskflow@postgres:5432/taskflow
+      TASKFLOW_REDIS_URL: redis://redis:6379/0
+      TASKFLOW_CELERY_BROKER_URL: redis://redis:6379/1
+      TASKFLOW_CELERY_RESULT_BACKEND: redis://redis:6379/2
+      TASKFLOW_LOG_LEVEL: INFO
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: celery -A taskflow.worker.celery_app worker --loglevel=info --queues=default,high,low
+
+  # Celery Worker (Critical Queue)
+  worker-critical:
+    build: .
+    container_name: taskflow-worker-critical
+    environment:
+      TASKFLOW_DATABASE_URL: postgresql+asyncpg://taskflow:taskflow@postgres:5432/taskflow
+      TASKFLOW_REDIS_URL: redis://redis:6379/0
+      TASKFLOW_CELERY_BROKER_URL: redis://redis:6379/1
+      TASKFLOW_CELERY_RESULT_BACKEND: redis://redis:6379/2
+      TASKFLOW_LOG_LEVEL: INFO
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: celery -A taskflow.worker.celery_app worker --loglevel=info --queues=critical
+
+  # Celery Beat (Scheduler)
+  beat:
+    build: .
+    container_name: taskflow-beat
+    environment:
+      TASKFLOW_DATABASE_URL: postgresql+asyncpg://taskflow:taskflow@postgres:5432/taskflow
+      TASKFLOW_REDIS_URL: redis://redis:6379/0
+      TASKFLOW_CELERY_BROKER_URL: redis://redis:6379/1
+      TASKFLOW_CELERY_RESULT_BACKEND: redis://redis:6379/2
+      TASKFLOW_SCHEDULER_JOB_STORE: redis://redis:6379/3
+      TASKFLOW_LOG_LEVEL: INFO
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: celery -A taskflow.worker.celery_app beat --loglevel=info
+
+  # Flower (Celery Monitoring)
+  flower:
+    build: .
+    container_name: taskflow-flower
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+    command: celery -A taskflow.worker.celery_app flower --port=5555
+
+volumes:
+  postgres_data:
+  redis_data:
