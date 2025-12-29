@@ -1,4 +1,4 @@
-# 🚀 TaskFlow - Distributed Task Processing System
+#  TaskFlow - Distributed Task Processing System
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-green.svg)](https://fastapi.tiangolo.com/)
@@ -7,28 +7,28 @@
 
 A production-ready, enterprise-grade distributed task processing system built with **FastAPI** and **Celery**. TaskFlow provides a robust infrastructure for handling background jobs, scheduled tasks, and complex workflows with real-time progress tracking.
 
-## ✨ Features
+##  Features
 
 ### Core Capabilities
-- **🔄 Task Queue Management** - Submit, cancel, retry, and monitor tasks
-- **⚡ Priority Queues** - Critical, high, normal, and low priority levels
-- **📅 Task Scheduling** - Cron-like recurring tasks with APScheduler
-- **📊 Progress Tracking** - Real-time task progress via WebSocket
-- **💀 Dead Letter Queue** - Automatic handling of failed tasks
-- **🔗 Task Dependencies** - DAG-based task workflows
-- **📈 Monitoring Dashboard** - Task metrics and analytics API
-- **🔔 Webhook Notifications** - Task completion callbacks
+- ** Task Queue Management** - Submit, cancel, retry, and monitor tasks
+- ** Priority Queues** - Critical, high, normal, and low priority levels
+- ** Task Scheduling** - Cron-like recurring tasks with APScheduler
+- ** Progress Tracking** - Real-time task progress via WebSocket
+- ** Dead Letter Queue** - Automatic handling of failed tasks
+- ** Task Dependencies** - DAG-based task workflows
+- ** Monitoring Dashboard** - Task metrics and analytics API
+- **Webhook Notifications** - Task completion callbacks
 
 ### Production Features
-- **🔐 JWT Authentication** - Secure API access
-- **🏢 Multi-tenancy Support** - Isolated task queues per tenant
-- **📝 Structured Logging** - JSON logging with correlation IDs
-- **🔍 Health Checks** - Liveness and readiness probes
-- **📦 Docker Ready** - Complete containerization
-- **🚀 CI/CD Pipeline** - GitHub Actions workflow
-- **📖 API Documentation** - Interactive Swagger UI
+- ** JWT Authentication** - Secure API access
+- ** Multi-tenancy Support** - Isolated task queues per tenant
+- ** Structured Logging** - JSON logging with correlation IDs
+- ** Health Checks** - Liveness and readiness probes
+- ** Docker Ready** - Complete containerization
+- **CI/CD Pipeline** - GitHub Actions workflow
+- **📖API Documentation** - Interactive Swagger UI
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -221,7 +221,7 @@ All configuration is done via environment variables. See `.env.example` for all 
 | `TASKFLOW_LOG_LEVEL` | Logging level | `INFO` |
 | `TASKFLOW_SCHEDULER_ENABLED` | Enable APScheduler | `true` |
 
-## 📊 Monitoring
+##  Monitoring
 
 ### Flower Dashboard
 Access the Flower monitoring dashboard at `http://localhost:5555` to:
@@ -270,7 +270,7 @@ curl http://localhost:8000/ready
 curl http://localhost:8000/health
 ```
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Install dev dependencies
@@ -348,7 +348,7 @@ TaskFlow/
 └── README.md
 ```
 
-## 🚀 Deployment
+##  Deployment
 
 ### Production Checklist
 
@@ -379,7 +379,7 @@ kubectl apply -f k8s/service.yaml
 kubectl apply -f k8s/ingress.yaml
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -395,7 +395,7 @@ Contributions are welcome! Please follow these steps:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [FastAPI](https://fastapi.tiangolo.com/) - Modern, fast web framework
 - [Celery](https://docs.celeryq.dev/) - Distributed task queue
@@ -409,9 +409,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For questions and support:
-- 📧 Email: support@taskflow.dev
-- 💬 Discord: [Join our community](https://discord.gg/taskflow)
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/taskflow/issues)
+-  Email: support@taskflow.dev
+-  Discord: [Join our community](https://discord.gg/taskflow)
+-  Issues: [GitHub Issues](https://github.com/yourusername/taskflow/issues)
 
 ---
 
